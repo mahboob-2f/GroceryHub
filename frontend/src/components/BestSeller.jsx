@@ -4,11 +4,18 @@ import { AppContext } from '../context/AppContext';
 
 const BestSeller = () => {
   const {product} = useContext(AppContext);
+  // console.log(product);
+  
   return (
     <div className='mt-16'>
       <p className='text-2xl md:text-3xl font-medium'>Best Sellers</p>
-      <div className=''>
-        <ProductCard product={product[0]}/>
+      <div className='grid grid-cols-2 sm:grid-cols-3 gap-3 md:grid-cols-4 md:gap-6 lg:grid-cols-5 '>
+        {
+          product.filter((product)=>product.inStock).slice(0,5).map((product,index)=>(
+            <ProductCard key={index} product={product }/>
+
+          ))
+        }
       </div>
     </div>
   );
