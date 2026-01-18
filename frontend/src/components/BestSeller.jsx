@@ -13,7 +13,6 @@ const BestSeller = () => {
         {
           product.filter((product)=>product.inStock).slice(0,5).map((product,index)=>(
             <ProductCard key={index} product={product }/>
-
           ))
         }
       </div>
