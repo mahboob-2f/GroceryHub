@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {   NavLink } from 'react-router';
 import { assets } from '../assets/assets';
 import { useContext } from 'react';
@@ -7,15 +7,21 @@ import { AppContext } from '../context/AppContext';
 const Navbar = () => {
     const [open, setOpen] = React.useState(false)
 
-    const {user,setUser,showUserLogin,setShowUserLogin,navigate}= useContext(AppContext);
+    const {user,setUser,showUserLogin,setShowUserLogin,navigate,searchQuery,setSearchQuery}= useContext(AppContext);
 
     const logout = async()=>{
         setUser(null);
         navigate('/');
     }
+    useEffect(()=>{
+        if(searchQuery.length > 0){
+            navigate('/products')
+        }
+    },[searchQuery])
 
     return (
-        <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
+        <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b
+            border-gray-300 bg-white relative transition-all">
 
             <NavLink to='/' onClick={()=>setOpen(false)}>
                 <img src={assets.logo} alt="" width="157" height="40" />
@@ -28,7 +34,8 @@ const Navbar = () => {
                 <NavLink to=''>Contact</NavLink>
 
                 <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
-                    <input className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500" type="text" placeholder="Search products" />
+                    <input onChange={e=>setSearchQuery(e.target.value)} className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500" 
+                        type="text" placeholder="Search products" />
                     <img src={assets.search_icon} alt="search" className='w-4 h-4' />
                 </div>
 
@@ -39,7 +46,8 @@ const Navbar = () => {
 
                 {   
                     !user ?
-                    (   <button onClick={()=>setShowUserLogin(true)} className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition text-white rounded-full">
+                    (   <button onClick={()=>setShowUserLogin(true)} 
+                        className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition text-white rounded-full">
                         Login
                         </button>
                     )
@@ -47,10 +55,11 @@ const Navbar = () => {
                     (
                         <div className='group relative'>   
                             <img src={assets.profile_icon} alt="profile icon" className='w-10 cursor-pointer'   />
-                            <ul className=' hidden group-hover:block absolute top-10 right-0 bg-white shadow border border-gray-200 py-2.5
-                                w-30 text-sm rounded-md z-40
+                            <ul className=' hidden group-hover:block absolute top-10 right-0 bg-white shadow border
+                                border-gray-200 py-2.5 w-30 text-sm rounded-md z-40
                             '>
-                                <li onClick={()=> navigate('/my-orders')} className='p-1 text-center  hover:bg-primary/10 cursor-pointer'>My Orders</li>
+                                <li onClick={()=> navigate('/my-orders')}
+                                    className='p-1 text-center  hover:bg-primary/10 cursor-pointer'>My Orders</li>
                                 <li onClick={logout}  className='p-1 text-center  hover:bg-primary/10 cursor-pointer'>Logout</li>
                             </ul>
                         </div>

@@ -12,10 +12,11 @@ export const AppContextProvider =({children}) =>{
     const navigate = useNavigate();
     const [user,setUser]= useState(null);
     const [isSeller,setIsSeller] = useState(false);
-    const [showUserLogin,setShowUserLogin]= useState(false)
+    const [showUserLogin,setShowUserLogin]= useState(false)   //   will use while showing user is logged in or not
     const [product,setProduct]= useState([]);
 
     const [cartItems,setCartItems]= useState({})
+    const [searchQuery,setSearchQuery]= useState({})
 
     //  fetch all Products
     const fetchProducts = async()=>{
@@ -72,6 +73,8 @@ export const AppContextProvider =({children}) =>{
         addToCart,
         updateCartItem,
         removeFromCart,
+        searchQuery,
+        setSearchQuery
     }
 
     return(

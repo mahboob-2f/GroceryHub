@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Navbar from './components/Navbar';
 import Routees from './Routees';
 import { useLocation } from 'react-router';
 import { Toaster } from 'react-hot-toast';
 import Footer from './components/Footer';
+import { AppContext } from './context/AppContext';
+import Login from './components/Login';
 
 const App = () => {
 
   const isSellerPath = useLocation().pathname.includes("seller");
   // console.log(isSellerPath.pathname);
+  const {showUserLogin}= useContext(AppContext);
 
 
   return (
     <div>
       <div>
        {isSellerPath ? null : <Navbar />}
+       {showUserLogin ? <Login /> : null}
       </div>
-
-
 
 
       <Toaster/>
