@@ -18,6 +18,7 @@ export const AppContextProvider =({children}) =>{
 
     const [cartItems,setCartItems]= useState({})
     const [searchQuery,setSearchQuery]= useState({})
+    const [totalProducts,setTotalProducts]= useState(0);
 
     //  fetch all Products
     const fetchProducts = async()=>{
@@ -38,6 +39,7 @@ export const AppContextProvider =({children}) =>{
         }
         setCartItems(cartData);
         toast.success("Added to Cart");
+        setTotalProducts(pre => pre +1)
     }
     //  updata cart quantity 
     const updateCartItem =(itemId,quantity)=>{
@@ -57,6 +59,20 @@ export const AppContextProvider =({children}) =>{
         }
         toast.success("Removed from cart");
         setCartItems(cartData);
+        setTotalProducts(pre => pre > 0 ? pre -1:0);
+    }
+
+    //   get total cart amounts
+
+    const getCartAmount =()=>{
+        let totalAmount=0;
+        for(const items in cartItems){
+            let itemInfo = product.find((product)=> product._id===items);
+            if(cartItems[items] > 0){
+                totalAmount += itemInfo.offerPrice * cartItems[items];
+            }
+        }
+        return Math.floor(totalAmount* 100)/100;
     }
 
 
@@ -70,6 +86,7 @@ export const AppContextProvider =({children}) =>{
         showUserLogin,
         setShowUserLogin,
         product,
+        totalProducts,
         loading,
         currency,
         cartItems,
@@ -77,7 +94,8 @@ export const AppContextProvider =({children}) =>{
         updateCartItem,
         removeFromCart,
         searchQuery,
-        setSearchQuery
+        setSearchQuery,
+        getCartAmount
     }
 
     return(

@@ -23,7 +23,7 @@ const ProductCategory = () => {
         </div>
       }
       {
-        fileteredProducts.length >0 ?
+        fileteredProducts.length > 0 ?
         (
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md: gap-6 lg:grid-cols-5 mt-6'>
                 {
@@ -36,7 +36,7 @@ const ProductCategory = () => {
         :
         (
             <div className='flex items-center justify-center h-[60vh]'>
-                <p className='text-2x1 font-medium text-primary'>No Products found in this category</p>
+                <p className='text-2xl font-medium text-primary'>No Products found in this category</p>
             </div>
         )
       }
