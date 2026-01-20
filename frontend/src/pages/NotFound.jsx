@@ -21,12 +21,14 @@ const NotFound = () => {
                     <div className="mt-10 flex items-center justify-center gap-x-6">
                         <p
                             onClick={()=>navigate('/')}
-                            className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                            className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white 
+                                shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2
+                                focus-visible:outline-indigo-500 cursor-pointer"
                         >
                             Go back home
                         </p>
                         <p  onClick={()=> navigate('/')} 
-                          className="text-sm font-semibold text-white">
+                          className="text-sm font-semibold text-white cursor-pointer">
                             Contact support <span aria-hidden="true">&rarr;</span>
                         </p>
                     </div>
