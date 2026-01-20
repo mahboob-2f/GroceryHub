@@ -14,6 +14,7 @@ export const AppContextProvider =({children}) =>{
     const [isSeller,setIsSeller] = useState(false);
     const [showUserLogin,setShowUserLogin]= useState(false)   //   will use while showing user is logged in or not
     const [product,setProduct]= useState([]);
+    const [loading,setLoading]= useState(true);
 
     const [cartItems,setCartItems]= useState({})
     const [searchQuery,setSearchQuery]= useState({})
@@ -21,6 +22,7 @@ export const AppContextProvider =({children}) =>{
     //  fetch all Products
     const fetchProducts = async()=>{
         setProduct(dummyProducts);
+        setLoading(false);
     }
     useEffect(()=>{
         fetchProducts();
@@ -68,6 +70,7 @@ export const AppContextProvider =({children}) =>{
         showUserLogin,
         setShowUserLogin,
         product,
+        loading,
         currency,
         cartItems,
         addToCart,

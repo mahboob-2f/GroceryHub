@@ -11,3 +11,16 @@
     --color-primary:#4fbf8b;
     --color-primary-dull:#44ae7c;
 }
+.spinner {
+   width: 14.4px;
+   height: 14.4px;
+   border-radius: 14.4px;
+   box-shadow: 36px 0px 0 0 rgba(32,200,85,0.2), 29.2px 21.2px 0 0 rgba(32,200,85,0.4), 11.16px 34.2px 0 0 rgba(32,200,85,0.6), -11.16px 34.2px 0 0 rgba(32,200,85,0.8), -29.2px 21.2px 0 0 #20c855;
+   animation: spinner-b87k6z 1.2s infinite linear;
+}
+
+@keyframes spinner-b87k6z {
+   to {
+      transform: rotate(360deg);
+   }
+}
