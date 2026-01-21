@@ -6,20 +6,20 @@ import ProductCard from '../components/ProductCard';
 
 const ProductDetails = () => {
 
-    const { product, navigate, addToCart, currency } = useContext(AppContext);
+    const { products, navigate, addToCart, currency } = useContext(AppContext);
     const { id } = useParams();
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [thumbnail, setThumbnail] = useState(null);
 
-    const selectedProduct = product.find((item) => item._id === id);
+    const selectedProduct = products.find((item) => item._id === id);
 
     useEffect(() => {
-        if (product.length > 0) {
-            let productsCopy = product.slice();
+        if (products.length > 0) {
+            let productsCopy = products.slice();
             productsCopy = productsCopy.filter((item) => item.category === selectedProduct.category);
             setRelatedProducts(productsCopy.slice(0, 5));
         }
-    }, [product])
+    }, [products])
 
     useEffect(() => {
         setThumbnail(selectedProduct?.image[0] ? selectedProduct.image[0] : null);

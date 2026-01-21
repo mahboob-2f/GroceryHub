@@ -202,7 +202,7 @@ export const features = [
 
 export const dummyProducts = [
   // Vegetables
-  {
+  { 
     _id: "gd46g23h",
     name: "Potato 500g",
     category: "Vegetables",

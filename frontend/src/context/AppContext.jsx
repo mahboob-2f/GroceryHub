@@ -13,7 +13,7 @@ export const AppContextProvider =({children}) =>{
     const [user,setUser]= useState(null);
     const [isSeller,setIsSeller] = useState(false);
     const [showUserLogin,setShowUserLogin]= useState(false)   //   will use while showing user is logged in or not
-    const [product,setProduct]= useState([]);
+    const [products,setProducts]= useState([]);
     const [loading,setLoading]= useState(true);
 
     const [cartItems,setCartItems]= useState({})
@@ -22,7 +22,7 @@ export const AppContextProvider =({children}) =>{
 
     //  fetch all Products
     const fetchProducts = async()=>{
-        setProduct(dummyProducts);
+        setProducts(dummyProducts);
         setLoading(false);
     }
     useEffect(()=>{
@@ -67,7 +67,7 @@ export const AppContextProvider =({children}) =>{
     const getCartAmount =()=>{
         let totalAmount=0;
         for(const items in cartItems){
-            let itemInfo = product.find((product)=> product._id===items);
+            let itemInfo = products.find((product)=> product._id===items);
             if(cartItems[items] > 0){
                 totalAmount += itemInfo.offerPrice * cartItems[items];
             }
@@ -85,7 +85,7 @@ export const AppContextProvider =({children}) =>{
         setIsSeller,
         showUserLogin,
         setShowUserLogin,
-        product,
+        products,
         totalProducts,
         loading,
         currency,

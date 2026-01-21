@@ -4,16 +4,16 @@ import ProductCard from '../components/ProductCard';
 
 const AllProducts = () => {
 
-  const { product,loading, searchQuery } = useContext(AppContext);
+  const { products,loading, searchQuery } = useContext(AppContext);
   const [fileteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     if (searchQuery.length > 0) {
-      setFilteredProducts(product.filter(product => {
+      setFilteredProducts(products.filter(product => {
         return product.name.toLowerCase().includes(searchQuery.toLowerCase());
       }))
-    } else setFilteredProducts(product);
-  }, [product, searchQuery])
+    } else setFilteredProducts(products);
+  }, [products, searchQuery])
   if (loading) {
   return (
     <div className="flex items-center justify-center min-h-[60vh] sm:min-h-[65vh] md:min-h-[70vh] lg:min-h-[33vh]">

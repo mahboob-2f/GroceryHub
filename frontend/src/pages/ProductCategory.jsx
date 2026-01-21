@@ -7,11 +7,11 @@ import ProductCard from '../components/ProductCard';
 
 const ProductCategory = () => {
 
-    const {product}= useContext(AppContext);
+    const {products}= useContext(AppContext);
     const {category}= useParams();
 
     const searchCategory= categories.find((item)=>item.path.toLowerCase()===category);
-    const fileteredProducts = product.filter((item)=>item.category.toLowerCase()===category);
+    const fileteredProducts = products.filter((item)=>item.category.toLowerCase()===category);
 
   return (
     <div className='mt-16'>
