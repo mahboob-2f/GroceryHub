@@ -7,6 +7,7 @@ import ProductCategory from './pages/ProductCategory';
 import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import AddAddress from './pages/AddAddress';
+import MyOrders from './pages/MyOrders';
 
 
 const Routees = () => {
@@ -18,6 +19,7 @@ const Routees = () => {
         <Route path='/products/:category/:id' element={<ProductDetails />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/add-address' element={<AddAddress />} />
+        <Route path='/my-orders' element={<MyOrders />} />
 
         <Route path='*' element={<NotFound/>}></Route>
     </Routes>
