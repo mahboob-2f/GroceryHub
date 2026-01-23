@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Routes ,Route } from 'react-router';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
@@ -8,9 +8,13 @@ import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import AddAddress from './pages/AddAddress';
 import MyOrders from './pages/MyOrders';
+import { AppContext } from './context/AppContext';
+import SellerLogin from './components/seller/SellerLogin';
 
 
 const Routees = () => {
+  const {isSeller} = useContext(AppContext);
+
   return (
     <Routes>
         <Route path ='/' element={<Home/>}></Route>
@@ -20,6 +24,9 @@ const Routees = () => {
         <Route path='/cart' element={<Cart />} />
         <Route path='/add-address' element={<AddAddress />} />
         <Route path='/my-orders' element={<MyOrders />} />
+        <Route path='/seller' element={!isSeller ? <SellerLogin /> :null} >
+
+        </Route>
 
         <Route path='*' element={<NotFound/>}></Route>
     </Routes>
