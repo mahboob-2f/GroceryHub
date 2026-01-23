@@ -15,11 +15,11 @@ const App = () => {
 
 
   return (
-    <div>
-      <div>
+    <div className='text-default min-h-screen text-gray-700 [bg-white]'>
+ 
        {isSellerPath ? null : <Navbar />}
        {showUserLogin ? <Login /> : null}
-      </div>
+ 
 
 
       <Toaster/>
