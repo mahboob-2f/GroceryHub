@@ -58,13 +58,12 @@ export const register = async (req, res) => {
             sameSite: process.env.NODE_ENV === 'development' ? 'strict' : 'none',
             maxAge: 7*24*60*60*1000,
         }
-        res.cookie('token', token, options);
-
+        res.cookie('token', token, options);  
         const mailOptions = {
             from: process.env.SENDER_MAIL,
             to: email,
             subject: `Welcome ${name}! Your Account Has Been Successfully Created`,
-            text: registerFormat(email,name), 
+            html: registerFormat(email,name), 
         }
 
         await transporter.sendMail(mailOptions);
@@ -73,7 +72,8 @@ export const register = async (req, res) => {
         return res.status(200)
             .json({
                 success: true,
-                user: { email: user.email, name: user.name }
+                user: { email: user.email, name: user.name },
+                message:`Welcome ${name}! Your Account Has Been Successfully Created.`
             })
 
 
