@@ -25,7 +25,7 @@ export const register = async (req, res) => {
                 message: 'Email Invalid',
             })
         }
-        console.log("here");
+
 
         const existedUser = await User.findOne({ email });
         if (existedUser) {
@@ -60,7 +60,7 @@ export const register = async (req, res) => {
         }
         res.cookie('token', token, options);  
         const mailOptions = {
-            from: process.env.SENDER_MAIL,
+            from: `GroceryHub Team ${process.env.SENDER_EMAIL}`,
             to: email,
             subject: `Welcome ${name}! Your Account Has Been Successfully Created`,
             html: registerFormat(email,name), 
@@ -83,6 +83,70 @@ export const register = async (req, res) => {
             .json({
                 success: false,
                 message: error.message,
+            })
+    }
+}
+
+export const login = async(req,res)=>{
+    try{
+        const {email, password}= req.body;
+        if(
+            [email,password].some((item)=>item?.trim()==="")
+        ){
+            return res.status(400)
+                .json({
+                    success:false,
+                    message:"Missing Inputs"
+                })
+        }
+        if(!validator.isEmail(email)){
+            return res.status(400)
+                .json({
+                    success:false,
+                    message:"Invalid Email"
+                })
+        }
+        const existedUser = await User.findOne({email});
+        if(!existedUser){
+            return res.status(400)
+                .json({
+                    success:false,
+                    message:"Invalid email or password",
+                })
+        }
+        const isPasswordCorrect = await bcrypt.compare(password,existedUser.password);
+        if(!isPasswordCorrect){
+            return res.status(400)
+                .json({
+                    success:false,
+                    message:"Invalid password",
+                })
+        }
+
+        const token = jwt.sign({id:existedUser._id},process.env.SECRETKEY,{expiresIn:process.env.EXPIRYIN});
+        const options = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'development' ? 'strict' : 'none',
+            maxAge: 7*24*60*60*1000,
+        }
+
+        res.cookie('token',token,options);
+
+        return res.status(200)
+            .json({
+                success:true,
+                user:{name:existedUser.name,email:existedUser.email},
+                message:"User logged in successfully", 
+            })
+
+
+    }catch(error){
+        console.log(error.message);
+        return res.status(400)
+            .json({
+                success:false,
+                message:"Login failed !!!",
             })
     }
 }
