@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { User } from '../models/users.models.js';
 
 export const authUser = async(req,res,next)=>{
     try{
@@ -11,21 +12,22 @@ export const authUser = async(req,res,next)=>{
                 })
         }
         const decodedToken = jwt.verify(token,process.env.SECRETKEY);
-        if(decodedToken?.id){
-            req.userId= decodedToken.id;
-        }
-        else {
-            return res.status(400)
+        const user= await User.findById(decodedToken?.id).select("-password");
+        
+        if(!user){
+            return res.status(401)
             .json({
                 success:false,
                 message:"Not authorised",
             })
         }
+        req.user = user;
+        // console.log(user);
         next();
 
     }catch(error){
         console.log('token verification failed');
-        return  res.status(400)
+        return  res.status(401)
             .json({
                 success:false,
                 message:'Not authorised user',

@@ -150,3 +150,58 @@ export const login = async(req,res)=>{
             })
     }
 }
+
+export const isAuth = async(req,res)=>{
+    try{
+        const userId= req.user._id;
+        // console.log(userId);
+
+        const user= await User.findById(userId).select("-password");
+        if(!user){
+            return res.status(400) 
+                .json({
+                    success:false,
+                    message:'User is not authenticated',
+                })
+        }
+        return res.status(200)
+            .json({
+                success:true,
+                user:user,
+                message:"user is Authorised",
+            })
+
+    }catch(error){
+        console.log(error.message);
+        return res.status(400) 
+                .json({
+                    success:false,
+                    message:`not authorised ${error.message}`,
+                })
+    }
+}
+
+export const logout = async(req,res)=>{
+    try{
+        const options = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'productio  n',
+            sameSite: process.env.NODE_ENV === 'development' ? 'strict' : 'none',
+            maxAge: 7*24*60*60*1000,
+        }
+        res.clearCookie('token',options);
+
+        return res.status(200)
+            .json({
+                success:true,
+                message:"Logged Out",
+            })
+
+    }catch(error){
+        return res.status(400) 
+                .json({
+                    success:false,
+                    message:'Logged out failed',
+                })
+    }
+}
