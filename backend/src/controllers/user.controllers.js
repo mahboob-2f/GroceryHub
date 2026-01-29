@@ -168,7 +168,7 @@ export const isAuth = async(req,res)=>{
             .json({
                 success:true,
                 user:user,
-                message:"user is Authorised",
+                message:"Authorised User",
             })
 
     }catch(error){
@@ -176,7 +176,7 @@ export const isAuth = async(req,res)=>{
         return res.status(400) 
                 .json({
                     success:false,
-                    message:`not authorised ${error.message}`,
+                    message:`not authorised user: ${error.message}`,
                 })
     }
 }
