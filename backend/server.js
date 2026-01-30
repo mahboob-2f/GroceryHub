@@ -8,6 +8,8 @@ import { userRouter } from './src/routes/user.routes.js';
 import { sellerRouter } from './src/routes/seller.routes.js';
 import { connectCloudinary } from './src/configs/cloudinary.configs.js';
 import { productRouter } from './src/routes/product.routes.js';
+import { cartRouter } from './src/routes/cart.routes.js';
+import { addressRouter } from './src/routes/address.routes.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -34,6 +36,8 @@ app.get('/',(req,res)=>{
 app.use('/api/user',userRouter);
 app.use('/api/seller',sellerRouter);
 app.use('/api/product',productRouter);
+app.use('/api/cart',cartRouter);
+app.use('/api/address',addressRouter);
 
 
 app.listen(port,()=>{
