@@ -52,7 +52,6 @@ export const placeOrderCOD = async(req,res)=>{
 }
 
 //  get order by userId   --- /api/order/user
- // TODO  here to start 
 
 export const getUserOrders= async(req,res)=>{
     try {
@@ -60,8 +59,26 @@ export const getUserOrders= async(req,res)=>{
         const orders = await Order.find({
             userId,
             $or:[{paymentType:'COD'},{isPaid:true}]
-        }).populate("item.product address")
+        }).populate("items.product address");
+        if(orders.length===0){
+            return res.status(404)
+                .json({
+                    success:false,
+                    message:'orders not found',
+                })
+        }
+        return res.status(200)
+            .json({
+                success:true,
+                orders,
+                message:"Orders found.",
+            })
+
     } catch (error) {
-        
+        return res.status(500)
+            .json({
+                success:false,
+                message:`Orders are not fetched ${error.message}`,
+            })
     }
 }
