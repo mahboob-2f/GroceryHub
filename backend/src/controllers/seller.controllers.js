@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import validator from 'validator'
 
 
 //      /api/seller/login
@@ -20,7 +21,7 @@ export const sellerLogin =async(req,res)=>{
                 })
         }
         if(email=== process.env.SELLER_EMAIL && password ==process.env.SELLER_PASSWORD){
-            const token = jwt.sign({email},process.env.SECRETKEY,{expiresIn:EXPIRYIN});
+            const token = jwt.sign({email},process.env.SECRETKEY,{expiresIn:process.env.EXPIRYIN});
             const options = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',

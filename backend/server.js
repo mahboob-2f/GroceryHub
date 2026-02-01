@@ -19,7 +19,7 @@ await connectDB();
 await connectCloudinary();
 
 //  allow multiples origins
-const allowedOrigins=['http://localhost:5173 ']
+const allowedOrigins=['http://localhost:5173']
 
 //    adding middlewares 
 app.use(express.json());

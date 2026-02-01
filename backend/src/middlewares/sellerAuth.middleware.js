@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-export const sellerAuth = async(req,res,next) =>{
+export const sellerAuth =  (req,res,next) =>{
     try {
         const {sellerToken}= req.cookies;
         if(!sellerToken){
@@ -12,6 +12,7 @@ export const sellerAuth = async(req,res,next) =>{
         }
 
         const decodedSellerToken = jwt.verify(sellerToken,process.env.SECRETKEY)
+        // const user = await 
         if(decodedSellerToken.email=== process.env.SELLER_EMAIL){
             next();
         }else{
