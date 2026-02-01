@@ -1,4 +1,4 @@
-import { User } from "../models/users.models";
+import { User } from "../models/users.models.js";
 
 
 //   cart updata --  api/cart/update

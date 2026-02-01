@@ -82,3 +82,34 @@ export const getUserOrders= async(req,res)=>{
             })
     }
 }
+
+
+//   get all orders for seller --   api/order/seller
+
+export const getAllOrders = async(req,res)=>{
+    try{
+        const orders = await Order.find({
+            $or:[{paymentType:'COD'},{isPaid:true}]
+        }).populate("items.product address").sort({createdAt:-1}); 
+
+        if(orders.length ===0){
+            return res.status(404)
+            .json({
+                success:false,
+                message:"Orders not found",
+            })
+        }
+        return res.status(201)
+            .json({
+                succes:true,
+                orders,
+                message:'Orders found',
+            })
+    }catch(error){
+        return res.status(500)
+            .json({
+                success:false,
+                message:error.message,
+            })
+    }
+}

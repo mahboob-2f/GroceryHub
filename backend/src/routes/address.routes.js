@@ -1,6 +1,6 @@
 import exprees from 'express'
-import { authUser } from '../middlewares/authuser.middleware';
-import { addAddress, getAddress } from '../controllers/address.controllers';
+import { authUser } from '../middlewares/authuser.middleware.js';
+import { addAddress, getAddress } from '../controllers/address.controllers.js';
 
 const addressRouter = exprees.Router();
 

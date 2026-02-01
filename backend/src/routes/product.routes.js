@@ -1,5 +1,5 @@
 import express from 'express'
-import { addProduct } from '../controllers/products.controller.js';
+import { addProduct, productById } from '../controllers/products.controllers.js';
 import { upload } from '../middlewares/multer.middlewares.js';
 import { productList } from '../controllers/products.controllers.js';
 import { sellerAuth } from '../middlewares/sellerAuth.middleware.js';
