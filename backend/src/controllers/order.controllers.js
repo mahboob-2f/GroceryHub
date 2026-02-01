@@ -59,7 +59,7 @@ export const getUserOrders= async(req,res)=>{
         const orders = await Order.find({
             userId,
             $or:[{paymentType:'COD'},{isPaid:true}]
-        }).populate("items.product address");
+        }).populate("items.product address").sort({createdAt:-1});
         if(orders.length===0){
             return res.status(404)
                 .json({
