@@ -1,21 +1,30 @@
 import React, { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
-const primary = () => {
-    const [state, setState] = React.useState("primary");
+const Login = () => {
+    const [state, setState] = React.useState("login");
     const [name, setName] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const {setShowUserLogin,setUser}= useContext(AppContext);
+    const {setShowUserLogin,setUser,axios,navigate}= useContext(AppContext);
 
     const submitHandler = async (e)=>{
-        e.preventDefault();
-        setUser({
-            email:"test@test.com",
-            name:"test"
-        })
-        setShowUserLogin(false);
+        try {
+            e.preventDefault();
+            const {data}= await axios.post(`/api/user/${state}`,{name,email,password});
+            if(data.success){
+                toast.success(data.message);
+                setUser(data.user);
+                setShowUserLogin(false);
+                navigate('/');
+            }else{
+                toast.error(data.message)
+            }
+            } catch (error) {
+                toast.error(error.message)
+        }
     }
 
     return (
@@ -25,7 +34,7 @@ const primary = () => {
             <form onSubmit={submitHandler} onClick={(e)=> e.stopPropagation()} className="flex flex-col gap-4 m-auto items-start p-8 py-12 w-80 sm:w-[352px]
                  text-gray-500 rounded-lg shadow-xl border border-primary bg-white">
                 <p className="text-2xl font-medium m-auto">
-                    <span className="text-primary">User</span> {state === "primary" ? "primary" : "Sign Up"}
+                    <span className="text-primary">User</span> {state === "login" ? "login" : "register"}
                 </p>
                 {state === "register" && (
                     <div className="w-full">
@@ -46,7 +55,7 @@ const primary = () => {
                 </div>
                 {state === "register" ? (
                     <p>
-                        Already have account? <span onClick={() => setState("primary")}
+                        Already have account? <span onClick={() => setState("login")}
                             className="text-primary cursor-pointer">click here</span>
                     </p>
                 ) : (
@@ -57,11 +66,11 @@ const primary = () => {
                 )}
                 <button className="bg-primary hover:bg-primary-dull transition-all text-white w-full py-2 
                     rounded-md cursor-pointer">
-                    {state === "register" ? "Create Account" : "primary"}
+                    {state === "register" ? "Create Account" : "login"}
                 </button>
             </form>
         </div>
     );
 };
 
-export default primary;
+export default Login;
