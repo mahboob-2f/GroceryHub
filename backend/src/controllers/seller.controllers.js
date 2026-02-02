@@ -50,10 +50,11 @@ export const sellerLogin =async(req,res)=>{
 
 export const isSellerAuth = async(req,res)=>{
     try{
+        const seller= req.seller;
         return res.status(200)
             .json({
                 success:true,
-                user:user,
+                seller,
                 message:"Authorised Seller",
             })
 
