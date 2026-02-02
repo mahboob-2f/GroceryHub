@@ -38,8 +38,18 @@ export const AppContextProvider =({children}) =>{
 
     //  fetch all Products
     const fetchProducts = async()=>{
-        setProducts(dummyProducts);
-        setLoading(false);
+        try {
+            const {data}= await axios.get('/api/product/list');
+            if(data.success){
+                setProducts(data.products);
+                setLoading(false);
+            }else{
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.message);
+
+        }
     }
     useEffect(()=>{
         fetchProducts();
@@ -114,6 +124,7 @@ export const AppContextProvider =({children}) =>{
         setSearchQuery,
         getCartAmount,
         axios,
+        fetchProducts,
     }
 
     return(
