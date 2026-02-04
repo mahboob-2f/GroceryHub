@@ -68,18 +68,41 @@ export const AppContextProvider =({children}) =>{
         fetchSeller();
         fetchUser();
     },[])
+
+    // update cartitems 
+
+    useEffect(()=>{
+        const updateCart= async()=>{
+            try {
+                const {data}= await axios.post('/api/cart/update',{cartItems});
+                if(!data.success){
+                    toast.error(data.message);
+                }else{
+                    // setTotalProducts(data.user.cartItems);
+                }
+            } catch (error) {
+                toast.error(error.message);
+                
+            }
+        }
+        let count = Object.values(cartItems).reduce((sum,count)=>sum+Number(count),0);
+        setTotalProducts(count);
+        
+        if(user) updateCart();
+    },[cartItems]);
+
     //  add products to cart
     const addToCart = (itemId)=>{
         let cartData = structuredClone(cartItems);
 
         if(cartData[itemId]){
-            cartData[itemId] += 1;
+            cartData[itemId] += Number(1);
         }else{
-            cartData[itemId] = 1;
+            cartData[itemId] = Number(1);
         }
         setCartItems(cartData);
         toast.success("Added to Cart");
-        setTotalProducts(pre => pre +1)
+        // setTotalProducts(pre => pre +1)
     }
     //  updata cart quantity 
     const updateCartItem =(itemId,quantity)=>{
@@ -92,14 +115,14 @@ export const AppContextProvider =({children}) =>{
     const removeFromCart = (itemId)=>{
         let cartData = structuredClone(cartItems);
         if(cartData[itemId]){
-            cartData[itemId] -=1;
+            cartData[itemId] -=Number(1);
             if(cartData[itemId]==0){
                 delete cartData[itemId];
             }
         }
         toast.success("Removed from cart");
         setCartItems(cartData);
-        setTotalProducts(pre => pre > 0 ? pre -1:0);
+        // setTotalProducts(pre => pre > 0 ? pre -1:0);
     }
 
     //   get total cart amounts
