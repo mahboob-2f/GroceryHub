@@ -72,6 +72,8 @@ export const AppContextProvider =({children}) =>{
     // update cartitems 
 
     useEffect(()=>{
+        let count = Object.values(cartItems).reduce((sum,count)=>sum+Number(count),0);
+        setTotalProducts(count);
         const updateCart= async()=>{
             try {
                 const {data}= await axios.post('/api/cart/update',{cartItems});
@@ -85,8 +87,6 @@ export const AppContextProvider =({children}) =>{
                 
             }
         }
-        let count = Object.values(cartItems).reduce((sum,count)=>sum+Number(count),0);
-        setTotalProducts(count);
         
         if(user) updateCart();
     },[cartItems]);
@@ -96,13 +96,13 @@ export const AppContextProvider =({children}) =>{
         let cartData = structuredClone(cartItems);
 
         if(cartData[itemId]){
-            cartData[itemId] += Number(1);
+            cartData[itemId] =Number(cartData[itemId])+ (1);
         }else{
-            cartData[itemId] = Number(1);
+            cartData[itemId] = (1);
         }
         setCartItems(cartData);
         toast.success("Added to Cart");
-        // setTotalProducts(pre => pre +1)
+        // setTotalProducts(pre => Number(pre) +Number(1))
     }
     //  updata cart quantity 
     const updateCartItem =(itemId,quantity)=>{
@@ -115,7 +115,7 @@ export const AppContextProvider =({children}) =>{
     const removeFromCart = (itemId)=>{
         let cartData = structuredClone(cartItems);
         if(cartData[itemId]){
-            cartData[itemId] -=Number(1);
+            cartData[itemId] =Number(cartData[itemId])-(1);
             if(cartData[itemId]==0){
                 delete cartData[itemId];
             }
