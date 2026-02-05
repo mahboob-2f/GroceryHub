@@ -12,7 +12,7 @@ const Cart = () => {
     const [selectAddress,setSelectAddress]= useState(null)
     const [paymentOption,setPayementOption]= useState("COD"); 
 
-    const {axios,user} = useContext(AppContext);
+    const {axios,user,setCartItems} = useContext(AppContext);
 
     const getCart =()=>{
         let tempArray =[];
@@ -51,7 +51,29 @@ const Cart = () => {
     },[products,cartItems])
 
     const placeOrder =async()=>{
-
+        try {
+            if(!selectAddress){
+                toast.error("Please select an Address");
+            }
+            if(paymentOption=="COD"){
+                const {data}= await axios.post('/api/order/cod',{
+                    // userId:user._id,
+                    items:cartArray.map(item => ({product:item._id,quantity:item.quantity})),
+                    address:selectAddress._id
+                })
+                if(data.success){
+                    toast.success(data.message);
+                    setCartItems({});
+                    navigate('/my-orders')
+                }else{
+                    toast.error(data.message);
+                    console.log("els");
+                }
+                
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
     }
     // console.log(getCartAmount);
 

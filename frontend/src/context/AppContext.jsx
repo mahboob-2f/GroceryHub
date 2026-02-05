@@ -153,6 +153,7 @@ export const AppContextProvider =({children}) =>{
         loading,
         currency,
         cartItems,
+        setCartItems,
         addToCart,
         updateCartItem,
         removeFromCart,

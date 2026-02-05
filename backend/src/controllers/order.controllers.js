@@ -37,7 +37,7 @@ export const placeOrderCOD = async(req,res)=>{
 
         return res.status(200)
             .json({
-                succes:true,
+                success:true,
                 message:"order placed",
             })
 
@@ -46,7 +46,7 @@ export const placeOrderCOD = async(req,res)=>{
         return res.status(401)
             .json({
                 succes:false,
-                message:o`rder not  placed : ${error.message}`,
+                message:`Order not  placed : ${error.message}`,
             })
     }
 }
@@ -101,7 +101,7 @@ export const getAllOrders = async(req,res)=>{
         }
         return res.status(201)
             .json({
-                succes:true,
+                success:true,
                 orders,
                 message:'Orders found',
             })
