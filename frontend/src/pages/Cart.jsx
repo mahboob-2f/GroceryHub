@@ -70,6 +70,20 @@ const Cart = () => {
                     console.log("els");
                 }
                 
+            }else{
+                // place order with strip
+                const {data}= await axios.post('/api/order/cod',{
+                    // userId:user._id,
+                    items:cartArray.map(item => ({product:item._id,quantity:item.quantity})),
+                    address:selectAddress._id
+                })
+                if(data.success){
+                    window.location.replace(data.url)
+                }else{
+                    toast.error(data.message);
+                    console.log("els");
+                }
+
             }
         } catch (error) {
             toast.error(error.message);
