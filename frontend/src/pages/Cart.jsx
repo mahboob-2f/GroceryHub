@@ -1,15 +1,18 @@
 import { use, useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 import { assets, dummyAddress } from '../assets/assets';
+import toast from 'react-hot-toast';
 
 const Cart = () => {
     
     const {products,currency,cartItems,removeFromCart,totalProducts,updateCartItem,navigate,getCartAmount}= useContext(AppContext);
     const [cartArray,setCartArray]= useState([]);
-    const [addresses,setAddresses]= useState(dummyAddress);
+    const [addresses,setAddresses]= useState( );
     const [showAddress, setShowAddress] = useState(false)
-    const [selectAddress,setSelectAddress]= useState(dummyAddress[0])
+    const [selectAddress,setSelectAddress]= useState(null)
     const [paymentOption,setPayementOption]= useState("COD"); 
+
+    const {axios,user} = useContext(AppContext);
 
     const getCart =()=>{
         let tempArray =[];
@@ -20,6 +23,27 @@ const Cart = () => {
         }
         setCartArray(tempArray);
     }
+    // get user address
+    const getUserAddress = async()=>{
+        try {
+            const {data}= await axios.get('/api/address/get');
+            if(data.success){
+                setAddresses(data.addresses);
+                if(data.addresses.length > 0)
+                    setSelectAddress(data.addresses[0]);
+            }else
+                toast.error(data.message);
+            } catch (error) {
+                toast.error(error.message);
+            
+        }
+    }
+    useEffect(()=>{
+        if(user){
+            getUserAddress();   
+        }
+    },[user])
+
     useEffect(()=>{
         if(products.length >0 && cartItems){
             getCart();
