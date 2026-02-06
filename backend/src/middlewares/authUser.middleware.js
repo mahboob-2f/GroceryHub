@@ -18,7 +18,7 @@ export const authUser = async(req,res,next)=>{
             return res.status(200)
             .json({
                 success:false,
-                message:"Not authorised",
+                message:"Not authorised, user not found",
             })
         }
         req.user = user;
