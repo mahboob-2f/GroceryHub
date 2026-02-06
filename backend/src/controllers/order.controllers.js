@@ -13,7 +13,7 @@ export const placeOrderStripe = async(req,res)=>{
         const {origin}= req.headers;
 
         if(!address || items.length ===0 ){
-            return res.status(401)
+            return res.status(200)
                 .json({
                     success:false,
                     message:'invalid data',
@@ -80,7 +80,7 @@ export const placeOrderStripe = async(req,res)=>{
 
 
     } catch (error) {
-        return res.status(401)
+        return res.status(404)
             .json({
                 succes:false,
                 message:`Order not  placed : ${error.message}`,
@@ -97,10 +97,10 @@ export const placeOrderCOD = async(req,res)=>{
         const {items,address}= req.body;
 
         if(!address || items.length ===0 ){
-            return res.status(401)
+            return res.status(200)
                 .json({
                     success:false,
-                    message:'invalid data',
+                    message:'Missing Inputs',
                 })
         }
 
@@ -129,7 +129,7 @@ export const placeOrderCOD = async(req,res)=>{
 
 
     } catch (error) {
-        return res.status(401)
+        return res.status(400)
             .json({
                 succes:false,
                 message:`Order not  placed : ${error.message}`,

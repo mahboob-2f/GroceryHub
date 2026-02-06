@@ -18,7 +18,7 @@ export const addAddress = async(req,res)=>{
             })
 
     } catch (error) {
-        return res.status(401)
+        return res.status(400)
             .json({
                 success:false,
                 message:`Address not added : ${error.message}`,
@@ -33,7 +33,7 @@ export const getAddress= async(req,res)=>{
         const userId = req.user._id;
         const addresses = await Address.find({userId});
         if(!addresses){
-            return res.status(401)
+            return res.status(200)
             .json({
                 success:false,
                 message:'addresses not found',
@@ -46,7 +46,7 @@ export const getAddress= async(req,res)=>{
                 message:'addresses found  !!!',
             })
     } catch (error) {
-        return res.status(401)
+        return res.status(404)
             .json({
                 success:false,
                 message:`not found addresses : ${error.message}`,

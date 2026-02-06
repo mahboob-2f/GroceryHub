@@ -44,7 +44,7 @@ export const addProduct = async(req,res)=>{
 
 
     } catch (error) {
-        return res.status(401)
+        return res.status(404)
             .json({
                 success:false,
                 message:`product is not added: ${error.message}`,
@@ -59,7 +59,7 @@ export const productList = async(req,res)=>{
 
         const products = await Product.find({});
         if(!products){
-            return res.status(401)
+            return res.status(200)
                 .json({
                     success:false,
                     message:'Products not found',
@@ -73,7 +73,7 @@ export const productList = async(req,res)=>{
             })
 
     } catch (error) {
-        return res.status(401)
+        return res.status(404)
             .json({
                 success:false,
                 message:`Products not found ${error.message}`,
@@ -88,7 +88,7 @@ export const productById = async(req,res)=>{
         const {id}= req.body;
         const product = await Product.findById(id);
         if(!product){
-            return res.status(401)
+            return res.status(200)
                 .json({
                     success:false,
                     message:'product not found',
@@ -102,7 +102,7 @@ export const productById = async(req,res)=>{
             })
         
     } catch (error) {
-        return res.status(401)
+        return res.status(404)
                 .json({
                     success:false,
                     message:`product not found : ${error.message}`,
@@ -122,7 +122,7 @@ export const changeStock = async(req,res)=>{
                 message:"stock updated",
             })
     } catch (error) {
-        return res.status(401)
+        return res.status(500)
                 .json({
                     success:false,
                     message:`stock not found : ${error.message}`,

@@ -7,14 +7,14 @@ export const sellerLogin =async(req,res)=>{
     try {
         const {email,password}= req.body;
         if([email,password].some(item => item?.trim()=="")){
-            return res.status(401)
+            return res.status(200)
                 .json({
                     success:false,
                     message:'email and password required',
                 })
         }
         if(!validator.isEmail(email)){
-            return res.status(401)
+            return res.status(200)
                 .json({
                     success:false,
                     message:'invalid email',
@@ -37,7 +37,7 @@ export const sellerLogin =async(req,res)=>{
         }
     } catch (error) {
         console.log(error.message);
-        return res.status(200)
+        return res.status(400)
                 .json({
                     success:true,
                     message:error.message,
@@ -60,7 +60,7 @@ export const isSellerAuth = async(req,res)=>{
 
     }catch(error){
         console.log(error.message);
-        return res.status(400) 
+        return res.status(401) 
                 .json({
                     success:false,
                     message:`not authorised Seller ${error.message}`,
@@ -87,7 +87,7 @@ export const sellerLogout = async(req,res)=>{
             })
 
     } catch (error) {
-        return res.status(401)
+        return res.status(400)
             .json({
                 success:false,
                 message:error.message,

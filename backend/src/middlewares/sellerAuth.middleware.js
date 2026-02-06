@@ -5,7 +5,7 @@ export const sellerAuth = async (req,res,next) =>{
     try {
         const {sellerToken}= req.cookies;
         if(!sellerToken){
-            return res.status(401)
+            return res.status(200)
                 .json({
                     success:false,
                     message:'unauthorised seller',
@@ -28,7 +28,7 @@ export const sellerAuth = async (req,res,next) =>{
             req.seller = seller;
             next();
         }else{
-            return res.status(401)
+            return res.status(200)
                 .json({
                     success:false,
                     message:'unauthorised seller',

@@ -16,7 +16,7 @@ export const updateCart = async(req,res)=>{
             })
 
     } catch (error) {
-        return res.status(401)
+        return res.status(400)
             .json({
                 success:false,
                 message:`cart not updated : ${error.message}`,

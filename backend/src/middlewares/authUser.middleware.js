@@ -15,7 +15,7 @@ export const authUser = async(req,res,next)=>{
         const user= await User.findById(decodedToken?.id).select("-password");
         
         if(!user){
-            return res.status(401)
+            return res.status(200)
             .json({
                 success:false,
                 message:"Not authorised",
