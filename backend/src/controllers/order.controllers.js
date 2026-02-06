@@ -11,16 +11,18 @@ export const placeOrderStripe = async(req,res)=>{
         const userId = req.user._id;
         const {items,address}= req.body;
         const {origin}= req.headers;
-
+        console.log(origin);
+        
+        
         if(!address || items.length ===0 ){
             return res.status(200)
-                .json({
-                    success:false,
-                    message:'invalid data',
-                })
+            .json({
+                success:false,
+                message:'invalid data',
+            })
         }
         let productData =[];
-
+        
         // calculate the amount
         let amount = await items.reduce(async(acc,item)=>{
             const product = await Product.findById(item.product);
@@ -28,13 +30,13 @@ export const placeOrderStripe = async(req,res)=>{
                 name:product.name,
                 price:product.offerPrice,
                 quantity:item.quantity,
-            })
+            });
             return (await acc) +product.offerPrice  *item.quantity;
         },0);
-
+        
         // tax  charge (2%)
-        amount +=Math.floor(amount+0.2);
-
+        amount +=Math.floor(amount *0.02);
+        
         const order =await Order.create({
             userId,
             items,
@@ -44,12 +46,13 @@ export const placeOrderStripe = async(req,res)=>{
         })
         // inititing stripe gateway
         const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
-
+        console.log("first");
+        
         // create the line items
-        const lineItems= productData.map(item=>{
+        const line_items= productData.map(item=>{
             return {
                 price_data:{
-                    currency:'dh',
+                    currency:'aed',
                     product_data:{
                         name:item.name,
                     },
@@ -58,27 +61,29 @@ export const placeOrderStripe = async(req,res)=>{
                 quantity:item.quantity,
             }
         })
-
+        console.log("second")
+        
         // creating session for stripe
-        const session= await stripeInstance.checkout.sessions({
-            line_items:lineItems,
+        const session= await stripeInstance.checkout.sessions.create({
+            line_items,
             mode:"payment",
             success_url:`${origin}/loader?next=my-orders`,
             cancel_url:`${origin}/cart`,
             metadata:{
-                userId,
                 orderId:order._id.toString(),
+                userId:userId.toString(),
             }
         })
-
+        console.log("third")
+        
         return res.status(200)
-            .json({
-                success:true,
-                url:session.url,
-                message:"order placed",
-            })
-
-
+        .json({
+            success:true,
+            url:session.url,
+            message:"order placed",
+        })
+        
+        
     } catch (error) {
         return res.status(404)
             .json({
@@ -111,7 +116,7 @@ export const placeOrderCOD = async(req,res)=>{
         },0);
 
         // tax  charge (2%)
-        amount +=Math.floor(amount+0.2);
+        amount +=Math.floor(amount*0.02);
 
         await Order.create({
             userId,
@@ -129,9 +134,9 @@ export const placeOrderCOD = async(req,res)=>{
 
 
     } catch (error) {
-        return res.status(400)
+        return res.status(500)
             .json({
-                succes:false,
+                success:false,
                 message:`Order not  placed : ${error.message}`,
             })
     }
