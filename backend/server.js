@@ -11,6 +11,7 @@ import { productRouter } from './src/routes/product.routes.js';
 import { cartRouter } from './src/routes/cart.routes.js';
 import { addressRouter } from './src/routes/address.routes.js';
 import { orderRouter } from './src/routes/order.routes.js';
+import { stripeWebHook } from './src/controllers/order.controllers.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,6 +21,8 @@ await connectCloudinary();
 
 //  allow multiples origins
 const allowedOrigins=['http://localhost:5173']
+
+app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 
 //    adding middlewares 
 app.use(express.json());

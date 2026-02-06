@@ -1,6 +1,7 @@
 import { Order } from "../models/order.models.js";
 import { Product } from "../models/products.models.js";
 import stripe from 'stripe'
+import { User } from "../models/users.models.js";
 
 
 //   place order with cod  ---  /api/order/stripe
@@ -11,7 +12,7 @@ export const placeOrderStripe = async(req,res)=>{
         const userId = req.user._id;
         const {items,address}= req.body;
         const {origin}= req.headers;
-        console.log(origin);
+        // console.log(origin);
         
         
         if(!address || items.length ===0 ){
@@ -42,11 +43,12 @@ export const placeOrderStripe = async(req,res)=>{
             items,
             amount,
             address,
+            // isPaid:true,
             paymentType:'Online',
         })
         // inititing stripe gateway
         const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
-        console.log("first");
+        // console.log("first");
         
         // create the line items
         const line_items= productData.map(item=>{
@@ -61,7 +63,7 @@ export const placeOrderStripe = async(req,res)=>{
                 quantity:item.quantity,
             }
         })
-        console.log("second")
+        // console.log("second")
         
         // creating session for stripe
         const session= await stripeInstance.checkout.sessions.create({
@@ -74,7 +76,7 @@ export const placeOrderStripe = async(req,res)=>{
                 userId:userId.toString(),
             }
         })
-        console.log("third")
+        // console.log("third")
         
         return res.status(200)
         .json({
@@ -92,6 +94,63 @@ export const placeOrderStripe = async(req,res)=>{
             })
     }
 }
+// stripe webhook for the verifying payment action  - /stripe
+export const stripeWebHook = async (request, response) => {
+    let event;
+    const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
+    const signature = request.headers['stripe-signature'];
+
+    try {
+        event = stripe.webhooks.constructEvent(
+            request.body,
+            signature,
+            process.env.WEBHOOK_SECRET
+        );
+    } catch (error) {
+        console.log(`⚠️ Webhook signature verification failed.`, error.message);
+        return response.sendStatus(400);
+    }
+
+    switch (event.type) {
+
+        // 🔧 FIX: correct event for Stripe Checkout
+        case 'checkout.session.completed': {
+            const session = event.data.object; // 🔧 FIX: no API call needed
+
+            const { userId, orderId } = session.metadata;
+
+            // make order as paid
+            await Order.findByIdAndUpdate(
+                orderId,
+                { isPaid: true },
+                { new: true } // 🔧 FIX: ensures update runs properly
+            );
+
+            // clear cart items
+            const user = await User.findById(userId);
+            if (user) { // 🔧 FIX: safety check
+                user.cartItems = {};
+                await user.save({ validateBeforeSave: false });
+            }
+            break;
+        }
+
+        // 🔧 FIX: correct failed event for Checkout
+        case 'checkout.session.expired': {
+            const session = event.data.object; // 🔧 FIX
+
+            const { orderId } = session.metadata;
+            await Order.findByIdAndDelete(orderId);
+            break;
+        }
+
+        default:
+            console.log(`Unhandled event type ${event.type}`);
+    }
+
+    return response.json({ received: true });
+};
+
 
 //   place order with cod  ---  /api/order/cod
 
@@ -123,6 +182,7 @@ export const placeOrderCOD = async(req,res)=>{
             items,
             amount,
             address,
+            isPaid:true,
             paymentType:'COD',
         })
 
