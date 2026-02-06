@@ -131,7 +131,7 @@ export const login = async(req,res)=>{
             maxAge: 7*24*60*60*1000,
         }
 
-        res.cookie('token',token,options);
+        res.cookie('token',token,options);  
 
         return res.status(200)
             .json({

@@ -5,10 +5,10 @@ export const authUser = async(req,res,next)=>{
     try{
         const {token}= req.cookies;
         if(!token){
-            return res.status(400)
+            return res.status(200)
                 .json({
                     success:false,
-                    message:"Not authorised",
+                    message:"Not authorised ,token not found",
                 })
         }
         const decodedToken = jwt.verify(token,process.env.SECRETKEY);
