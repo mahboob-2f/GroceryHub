@@ -212,7 +212,7 @@ export const getUserOrders= async(req,res)=>{
             $or:[{paymentType:'COD'},{isPaid:true}]
         }).populate("items.product address").sort({createdAt:-1});
         if(orders.length===0){
-            return res.status(404)
+            return res.status(200)
                 .json({
                     success:false,
                     message:'orders not found',
@@ -244,7 +244,7 @@ export const getAllOrders = async(req,res)=>{
         }).populate("items.product address").sort({createdAt:-1}); 
 
         if(orders.length ===0){
-            return res.status(404)
+            return res.status(200)
             .json({
                 success:false,
                 message:"Orders not found",
