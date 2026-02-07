@@ -21,7 +21,7 @@ await connectDB();
 await connectCloudinary();
 
 //  allow multiples origins
-const allowedOrigins=['http://localhost:5173','https://grocery-hub-eight.vercel.app']
+// const allowedOrigins=['http://localhost:5173','https://grocery-hub-eight.vercel.app']
 
 app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 
@@ -29,7 +29,11 @@ app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({extended:true}));
-app.use(cors({origin:allowedOrigins,credentials:true}));
+app.use(cors({
+    origin: 'https://grocery-hub-eight.vercel.app', // exact frontend deployed URL
+    credentials: true
+}));
+// app.use(cors({origin:allowedOrigins,credentials:true}));
 
 
 //            -----  API Endpoints   -----            //

@@ -54,8 +54,8 @@ export const register = async (req, res) => {
         
         const options = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'development' ? 'strict' : 'none',
+            secure: true,
+            sameSite: 'none',
             maxAge: 7*24*60*60*1000,
         }
         res.cookie('token', token, options);  
@@ -126,8 +126,8 @@ export const login = async(req,res)=>{
         const token = jwt.sign({id:existedUser._id},process.env.SECRETKEY,{expiresIn:process.env.EXPIRYIN});
         const options = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'development' ? 'strict' : 'none',
+            secure: true,
+            sameSite:  'none',
             maxAge: 7*24*60*60*1000,
         }
 
@@ -185,8 +185,8 @@ export const logout = async(req,res)=>{
     try{
         const options = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'development' ? 'strict' : 'none',
+            secure: true,
+            sameSite:  'none',
             maxAge: 7*24*60*60*1000,
         }
         res.clearCookie('token',options);
