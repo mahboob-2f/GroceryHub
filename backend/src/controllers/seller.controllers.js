@@ -74,7 +74,7 @@ export const sellerLogout = async(req,res)=>{
     try {   
         const options = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'productio  n',
+            secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'development' ? 'strict' : 'none',
             maxAge: 7*24*60*60*1000,
         }
