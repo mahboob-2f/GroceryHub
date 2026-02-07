@@ -15,6 +15,7 @@ import { stripeWebHook } from './src/controllers/order.controllers.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
+app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 
 await connectDB();
 await connectCloudinary();
@@ -24,20 +25,19 @@ const allowedOrigins=['http://localhost:5173' ]
 
 
 //    adding middlewares 
-app.set("trust proxy", 1); // 🔥 REQUIRED ON RENDER
+// app.set("trust proxy", 1); // 🔥 REQUIRED ON RENDER
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
 app.use(cors({
     origin: allowedOrigins, // exact frontend deployed URL
     credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
-app.use(cookieParser());
 // app.use(cors({origin:allowedOrigins,credentials:true}));
 
 
 //            -----  API Endpoints   -----            //
 
-app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 
 app.get('/',(req,res)=>{
     res.send('Server is listening ...');
