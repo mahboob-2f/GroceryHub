@@ -20,13 +20,13 @@ await connectDB();
 await connectCloudinary();
 
 //  allow multiples origins
-// const allowedOrigins=['http://localhost:5173','https://grocery-hub-eight.vercel.app']
+const allowedOrigins=['http://localhost:5173' ]
 
 
 //    adding middlewares 
 app.set("trust proxy", 1); // 🔥 REQUIRED ON RENDER
 app.use(cors({
-    origin: 'https://grocery-hub-eight.vercel.app', // exact frontend deployed URL
+    origin: allowedOrigins, // exact frontend deployed URL
     credentials: true
 }));
 app.use(express.json());
