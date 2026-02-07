@@ -3,6 +3,7 @@ import { User } from '../models/users.models.js';
 
 export const authUser = async(req,res,next)=>{
     try{
+        console.log("Cookies received:", req.cookies)
         const {token}= req.cookies;
         if(!token){
             return res.status(200)
