@@ -15,7 +15,6 @@ import { stripeWebHook } from './src/controllers/order.controllers.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
-app.set("trust proxy", 1); // 🔥 REQUIRED ON RENDER
 
 await connectDB();
 await connectCloudinary();
@@ -23,21 +22,22 @@ await connectCloudinary();
 //  allow multiples origins
 // const allowedOrigins=['http://localhost:5173','https://grocery-hub-eight.vercel.app']
 
-app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 
 //    adding middlewares 
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({extended:true}));
+app.set("trust proxy", 1); // 🔥 REQUIRED ON RENDER
 app.use(cors({
     origin: 'https://grocery-hub-eight.vercel.app', // exact frontend deployed URL
     credentials: true
 }));
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
 // app.use(cors({origin:allowedOrigins,credentials:true}));
 
 
 //            -----  API Endpoints   -----            //
 
+app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 
 app.get('/',(req,res)=>{
     res.send('Server is listening ...');
