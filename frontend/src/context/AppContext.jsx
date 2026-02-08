@@ -27,7 +27,7 @@ export const AppContextProvider =({children}) =>{
     //  fetching is seller authenticated
     const fetchSeller = async()=>{
         try {
-            const {data}= await axios.get("/api/seller/is-auth");
+            const {data}= await axios.get("/api/seller/is-auth",{ withCredentials: true });
             if(data.success){
                 setIsSeller(true);
             }else setIsSeller(false);
@@ -38,7 +38,7 @@ export const AppContextProvider =({children}) =>{
     // fetching the user and user cart items
     const fetchUser= async()=>{
         try {
-            const {data}= await axios.get('/api/user/is-auth');
+            const {data}= await axios.get('/api/user/is-auth',{ withCredentials: true });
             if(data.success){
                 setUser(data.user);
                 setCartItems(data.user.cartItems);
@@ -51,7 +51,7 @@ export const AppContextProvider =({children}) =>{
     //  fetch all Products
     const fetchProducts = async()=>{
         try {
-            const {data}= await axios.get('/api/product/list');
+            const {data}= await axios.get('/api/product/list',{ withCredentials: true });
             if(data.success){
                 setProducts(data.products);
                 setLoading(false);
@@ -76,7 +76,7 @@ export const AppContextProvider =({children}) =>{
         setTotalProducts(count);
         const updateCart= async()=>{
             try {
-                const {data}= await axios.post('/api/cart/update',{cartItems});
+                const {data}= await axios.post('/api/cart/update',{cartItems},{ withCredentials: true });
                 if(!data.success){
                     toast.error(data.message);
                 }else{

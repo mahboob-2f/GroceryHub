@@ -16,7 +16,7 @@ const SellerLayout = () => {
     ];
     const logout = async () => {
         try {
-            const {data}= await axios.post('api/seller/logout');
+            const {data}= await axios.post('api/seller/logout',{ withCredentials: true });
             if(data.success){
                 setIsSeller(false);
                 toast.success(data.message);

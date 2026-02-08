@@ -13,7 +13,7 @@ const Login = () => {
     const submitHandler = async (e)=>{
         try {
             e.preventDefault();
-            const {data}= await axios.post(`/api/user/${state}`,{name,email,password});
+            const {data}= await axios.post(`/api/user/${state}`,{name,email,password},{ withCredentials: true });
             if(data.success){
                 toast.success(data.message);
                 setUser(data.user);

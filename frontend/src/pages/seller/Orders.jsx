@@ -9,7 +9,7 @@ const Orders = () => {
 
     const fetchOrders = async () => {
         try {
-            const {data}= await axios.get('/api/order/seller');
+            const {data}= await axios.get('/api/order/seller',{ withCredentials: true });
             if(data.success) setOrders(data.orders);
             else toast.error(data.message);
         } catch (error) {
