@@ -15,13 +15,13 @@ import { stripeWebHook } from './src/controllers/order.controllers.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
-app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 
 await connectDB();
 await connectCloudinary();
 
 //  allow multiples origins
-const allowedOrigins=['http://localhost:5173' ]
+const allowedOrigins=['http://localhost:5173','https://grocery-hub-qra1.vercel.app' ]
+app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 
 
 //    adding middlewares 
