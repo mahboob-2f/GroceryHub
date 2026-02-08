@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://grocery-hub-five.vercel.app/api"
+      "destination": "https://grocery-hub-five.vercel.app/api/$1"
     },
     {
       "source": "/(.*)",
