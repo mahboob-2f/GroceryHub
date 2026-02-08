@@ -25,7 +25,7 @@ app.post('/stripe',express.raw({type: 'application/json'}),stripeWebHook)
 
 
 //    adding middlewares 
-// app.set("trust proxy", 1); // 🔥 REQUIRED ON RENDER
+app.set("trust proxy", 1); 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
