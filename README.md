@@ -42,8 +42,8 @@ The project is **under active development**. Additional functionality and refine
 - **Frontend:** React, Context/Redux (if used), Tailwind/Bootstrap (if used)
 - **Backend:** Node.js, Express
 - **Database:** MongoDB + Mongoose
-- **Payments:** Stripe or Razorpay
-- **Deployment:** (Add: Vercel, Netlify, Render, etc.)
+- **Payments:** Stripe
+- **Deployment:** (Vercel)
 
 > Update the placeholders above to reflect your exact implementation.
 
