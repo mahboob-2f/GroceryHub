@@ -6,8 +6,8 @@ import fs from 'fs'
 
 
 const uploadPath = path.join(process.cwd(), "public", "images", "uploads");
-if (!fs.existsSync(uploadPath)) 
-    fs.mkdirSync(uploadPath, { recursive: true })
+// if (!fs.existsSync(uploadPath)) 
+//     fs.mkdirSync(uploadPath, { recursive: true })
 
 
 const storage = multer.diskStorage({
