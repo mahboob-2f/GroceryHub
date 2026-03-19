@@ -2,10 +2,11 @@ import multer from "multer";
 import crypto from 'crypto'
 import path from 'path'
 import fs from 'fs'
+import os from 'os'
 
 
 
-const uploadPath = path.join(process.cwd(),"uploads");
+const uploadPath = path.join(os.tmpdir(),"uploads");
 if (!fs.existsSync(uploadPath)) 
     fs.mkdirSync(uploadPath, { recursive: true })
 
