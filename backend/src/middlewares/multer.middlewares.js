@@ -4,7 +4,7 @@ import path from 'path'
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/images/uploads')
+    cb(null, './uploads')
   },
   filename: function (req, file, cb) {
     crypto.randomBytes(12,(err,bytes)=>{
