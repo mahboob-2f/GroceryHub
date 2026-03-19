@@ -5,50 +5,48 @@ import { uploadOnCloudinary } from "../utils/uploadOnCloudinary.js";
 //  add product  --    /api/product/add
 export const addProduct = async(req,res)=>{
     try {
+        console.log("req.body:", req.body); // added: debug request body
+        console.log("req.files:", req.files); // added: debug uploaded files
 
-        const productData = JSON.parse(req.body.productData);
+        if (!req.body.productData) {
+            return res.status(400).json({
+                success: false,
+                message: "productData is missing",
+            });
+        }
+
+        const productData = JSON.parse(req.body.productData); // kept
         const images = req.files;
 
-        let imagesUrl= await Promise.all(
+        if (!images || images.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No images uploaded", // added: prevent images.map crash
+            });
+        }
+
+        let imagesUrl = await Promise.all(
             images.map(async(image)=>{
-                let result = await uploadOnCloudinary(image.path,{resource_type:'image'})
+                console.log("image.path:", image.path); // added: check deployed file path
+                let result = await uploadOnCloudinary(image.path,{resource_type:'image'}); // this is the most likely failing line
+                if (!result) throw new Error("Cloudinary upload failed"); // added: handle null result
                 return result.secure_url;
             })
-        )
+        );
 
-        await Product.create({...productData,image:imagesUrl});
-        
-        return res.status(200)
-                .json({
-                    success:true,
-                    message:'Product Added',
-                })
+        await Product.create({...productData, image: imagesUrl});
 
-        // const image = req.file;
-        // console.log(image);
-        // if(!image){
-        //     return res.status(400)
-        //         .json({
-        //             success:false,
-        //             message:"image not found",
-        //         })
-        // }
-        // const result= await uploadOnCloudinary(image.path)
-        // console.log(result);
-        // return res.status(200)
-        //     .json({
-
-        //         success:true,
-        //         message:'image uploaded',
-        //     })
-
+        return res.status(200).json({
+            success:true,
+            message:'Product Added',
+        });
 
     } catch (error) {
-        return res.status(404)
-            .json({
-                success:false,
-                message:`product is not added: ${error.message}`,
-            })
+        console.log("addProduct error:", error); // added: print exact deployment error
+        return res.status(500).json({ // fixed: 404 was wrong
+            success:false,
+            message:`product is not added: ${error.message}`,
+        });
     }
 }
 
