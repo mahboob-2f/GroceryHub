@@ -27,6 +27,13 @@ const AddProduct = () => {
             }
             const formData = new FormData();
             formData.append('productData',JSON.stringify(productData));
+
+            const hasFiles = files.some(file=> file);
+            if(!hasFiles){
+                toast.error("Please upload at least one product image.");
+                return;
+            }
+            
             for(let i=0;i<files.length;i++){
                 formData.append("images",files[i]);
             }
