@@ -4,7 +4,8 @@ import { dummyProducts } from "../assets/assets";
 import toast from 'react-hot-toast'
 import axios from 'axios';
 
-axios.defaults.baseURL="/";
+// axios.defaults.baseURL="http://localhost:3000/"; // for local development
+axios.defaults.baseURL ='/'; // for production
 axios.defaults.withCredentials=true;
 
 export const AppContext = createContext();

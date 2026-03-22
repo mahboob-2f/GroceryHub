@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
 
@@ -24,6 +24,20 @@ const ProductList = () => {
             setLoading(false)
         }
     }
+    useEffect(() => {
+        const loadProducts = async () => {
+            setLoading(true); 
+            try {
+                await fetchProducts();
+            } catch (error) {
+                toast.error(error.message);
+            } finally {
+                setLoading(false);  
+            }
+        };
+
+        loadProducts();
+    }, []);
 
 
     return (
@@ -31,7 +45,7 @@ const ProductList = () => {
             {
                 loading ?
                     (
-                        <div className="flex-1 h-[95vh] overflow-hidden p-4 md:p-10">
+                        <div className="flex-1 h-[95vh] overflow-hidden p-4 md:p-10 w-[80vw]">
                             <div className="w-full max-w-4xl rounded-2xl border border-gray-200 bg-white shadow-sm p-6 md:p-8">
                                 <div className="flex items-center gap-4">
                                     <div className="relative w-14 h-14 flex items-center justify-center">
@@ -42,7 +56,7 @@ const ProductList = () => {
 
                                     <div>
                                         <div>
-                                            <p className="text-2xl font-semibold text-gray-800">Updating Product...</p>
+                                            <p className="text-2xl font-semibold text-gray-800">Fetching Current Product...</p>
                                             <p className="text-sm text-gray-500 mt-1">Please wait while product stock is being updated.</p>
                                         </div>
                                     </div>
@@ -58,7 +72,7 @@ const ProductList = () => {
                     )
                     :
                     (
-                        <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll flex flex-col justify-between">
+                        <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll flex flex-col justify-between w-[80vw] items-center">
                             <div className="w-full md:p-10 p-4">
                                 <h2 className="pb-4 text-lg font-medium">All Products</h2>
                                 <div className="flex flex-col items-center max-w-4xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
