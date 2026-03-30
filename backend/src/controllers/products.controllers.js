@@ -5,8 +5,8 @@ import { uploadOnCloudinary } from "../utils/uploadOnCloudinary.js";
 //  add product  --    /api/product/add
 export const addProduct = async(req,res)=>{
     try {
-        console.log("req.body:", req.body); // added: debug request body
-        console.log("req.files:", req.files); // added: debug uploaded files
+        // console.log("req.body:", req.body); // added: debug request body
+        // console.log("req.files:", req.files); // added: debug uploaded files
 
         if (!req.body.productData) {
             return res.status(400).json({

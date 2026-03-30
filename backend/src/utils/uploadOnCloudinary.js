@@ -9,7 +9,7 @@ const uploadOnCloudinary = async(localFilePath)=>{
 
         const response = await cloudinary.uploader.upload(localFilePath,options);
         
-        console.log('file upload successfulyy',response.secure_url);
+        // console.log('file upload successfulyy',response.secure_url);
 
         // fs.unlinkSync(localFilePath);        //   this will delete from our local system
         return response;
