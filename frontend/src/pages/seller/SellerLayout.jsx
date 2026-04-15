@@ -3,10 +3,12 @@ import { AppContext } from '../../context/AppContext';
 import { assets } from '../../assets/assets';
 import { Link, NavLink, Outlet } from 'react-router';
 import toast from 'react-hot-toast';
+import ButtonLoader from '../../components/ButtonLoader';
 
 const SellerLayout = () => {
 
     const { isSeller,setIsSeller ,axios,navigate} = useContext(AppContext);
+    const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
 
     const sidebarLinks = [
@@ -16,6 +18,7 @@ const SellerLayout = () => {
     ];
     const logout = async () => {
         try {
+            setIsLoggingOut(true);
             const {data}= await axios.post('api/seller/logout',{ withCredentials: true });
             if(data.success){
                 setIsSeller(false);
@@ -26,6 +29,8 @@ const SellerLayout = () => {
             }
         } catch (error) {
             toast.error(error.message);
+        } finally {
+            setIsLoggingOut(false);
         }
     }
 
@@ -37,7 +42,12 @@ const SellerLayout = () => {
                 </Link>
                 <div className="flex items-center gap-5 text-gray-500">
                     <p>Hi! Admin</p>
-                    <button onClick={logout} className='border rounded-full text-sm px-4 py-1 cursor-pointer'>Logout</button>
+                    <button disabled={isLoggingOut} onClick={logout} className='border rounded-full text-sm px-4 py-1 cursor-pointer disabled:cursor-not-allowed disabled:opacity-70'>
+                        <span className='flex items-center justify-center gap-2'>
+                            {isLoggingOut && <ButtonLoader />}
+                            Logout
+                        </span>
+                    </button>
                 </div>
             </div>
             <div className='flex'>

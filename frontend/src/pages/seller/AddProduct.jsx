@@ -3,6 +3,7 @@ import { assets, categories } from '../../assets/assets';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
+import ButtonLoader from '../../components/ButtonLoader';
 
 
 const AddProduct = () => {
@@ -12,12 +13,14 @@ const AddProduct = () => {
     const [category,setCategory]= useState('');
     const [price,setPrice]= useState('');
     const [offerPrice,setOfferPrice]= useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {axios} = useContext(AppContext);
 
     const submitHandler = async(e)=>{
         try {
             e.preventDefault();
+            setIsSubmitting(true);
             const productData= {
                 name,
                 description:description.split('/n'),
@@ -53,7 +56,8 @@ const AddProduct = () => {
 
         } catch (error) {
             toast.error(error.message);
-
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -105,7 +109,12 @@ const AddProduct = () => {
                         <input onChange={e=>setOfferPrice(e.target.value)} value={offerPrice} id="offer-price" type="number" placeholder="0" className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40" required />
                     </div>
                 </div>
-                <button className="px-8 py-2.5 bg-primary cursor-pointer text-white font-medium rounded">ADD</button>
+                <button disabled={isSubmitting} className="px-8 py-2.5 bg-primary cursor-pointer text-white font-medium rounded disabled:cursor-not-allowed disabled:opacity-70">
+                    <span className='flex items-center justify-center gap-2'>
+                        {isSubmitting && <ButtonLoader />}
+                        ADD
+                    </span>
+                </button>
             </form>
         </div>
   );

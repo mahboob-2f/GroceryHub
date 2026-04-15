@@ -4,15 +4,17 @@ import { assets } from '../assets/assets';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
+import ButtonLoader from './ButtonLoader';
 
 const Navbar = () => {
     const [open, setOpen] = React.useState(false)
+    const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
     const {user,setUser,totalProducts,setShowUserLogin,navigate,searchQuery,setSearchQuery,axios}= useContext(AppContext);
 
     const logout = async()=>{
         try {
-            
+            setIsLoggingOut(true);
             const {data} = await axios.post('/api/user/logout',{ withCredentials: true });
             if(data.success){
                 toast.success(data.message);
@@ -23,6 +25,8 @@ const Navbar = () => {
             }
         } catch (error) {
             toast.error(error.message);
+        } finally {
+            setIsLoggingOut(false);
         }
     }
     useEffect(()=>{
@@ -72,7 +76,12 @@ const Navbar = () => {
                             '>
                                 <li onClick={()=> navigate('/my-orders')}
                                     className='p-1 text-center  hover:bg-primary/10 cursor-pointer'>My Orders</li>
-                                <li onClick={logout}  className='p-1 text-center  hover:bg-primary/10 cursor-pointer'>Logout</li>
+                                <li onClick={() => !isLoggingOut && logout()}  className='p-1 text-center  hover:bg-primary/10 cursor-pointer'>
+                                    <span className='flex items-center justify-center gap-2'>
+                                        {isLoggingOut && <ButtonLoader className='h-3.5 w-3.5' />}
+                                        Logout
+                                    </span>
+                                </li>
                             </ul>
                         </div>
                     )
@@ -115,10 +124,13 @@ const Navbar = () => {
                     )
                     :
                     (
-                        <button className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm"
+                        <button disabled={isLoggingOut} className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm disabled:cursor-not-allowed disabled:opacity-70"
                             onClick={logout}
                         >
-                        Logout
+                            <span className='flex items-center justify-center gap-2'>
+                                {isLoggingOut && <ButtonLoader />}
+                                Logout
+                            </span>
                         </button>
                     )
                     

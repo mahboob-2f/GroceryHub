@@ -2,15 +2,17 @@ import { use, useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 import { assets, dummyAddress } from '../assets/assets';
 import toast from 'react-hot-toast';
+import ButtonLoader from '../components/ButtonLoader';
 
 const Cart = () => {
     
-    const {products,currency,cartItems,removeFromCart,totalProducts,updateCartItem,navigate,getCartAmount}= useContext(AppContext);
+    const {products,currency,cartItems,removeFromCart,totalProducts,updateCartItem,navigate,getCartAmount,cartActionLoading}= useContext(AppContext);
     const [cartArray,setCartArray]= useState([]);
     const [addresses,setAddresses]= useState( );
     const [showAddress, setShowAddress] = useState(false)
     const [selectAddress,setSelectAddress]= useState(null)
     const [paymentOption,setPayementOption]= useState("COD"); 
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
     const {axios,user,setCartItems} = useContext(AppContext);
 
@@ -52,6 +54,7 @@ const Cart = () => {
 
     const placeOrder =async()=>{
         try {
+            setIsPlacingOrder(true);
             if(!selectAddress){
                 toast.error("Please select an Address");
                 return ;
@@ -89,6 +92,8 @@ const Cart = () => {
             }
         } catch (error) {
             toast.error(error.message);
+        } finally {
+            setIsPlacingOrder(false);
         }
     }
     // console.log(getCartAmount);
@@ -119,7 +124,7 @@ const Cart = () => {
                                     <p>Weight: <span>{product.weight || "N/A"}</span></p>
                                     <div className='flex items-center'>
                                         <p>Qty:</p>
-                                        <select onChange={(e)=> updateCartItem(product._id,e.target.value)} value={cartItems[product._id]} className='outline-none'>
+                                        <select disabled={Boolean(cartActionLoading[product._id])} onChange={(e)=> updateCartItem(product._id,e.target.value)} value={cartItems[product._id]} className='outline-none disabled:cursor-not-allowed disabled:opacity-60'>
                                             {Array(cartItems[product._id] > 9 ? cartItems[product._id] : 9 ).fill('').map((_, index) => (
                                                 <option key={index} value={index + 1}>{index + 1}</option>
                                             ))}
@@ -129,8 +134,12 @@ const Cart = () => {
                             </div>
                         </div>
                         <p className="text-center">{currency}{product.offerPrice * product.quantity}</p>
-                        <button onClick={()=>removeFromCart(product._id)} className="cursor-pointer mx-auto">
-                            <img src={assets.remove_icon} alt="remove "className='inline-block w-6 h-6' />
+                        <button disabled={Boolean(cartActionLoading[product._id])} onClick={()=>removeFromCart(product._id)} className="cursor-pointer mx-auto disabled:cursor-not-allowed disabled:opacity-60">
+                            {cartActionLoading[product._id] ? (
+                                <ButtonLoader className='text-primary' />
+                            ) : (
+                                <img src={assets.remove_icon} alt="remove "className='inline-block w-6 h-6' />
+                            )}
                         </button>
                     </div>)
                 )}
@@ -192,8 +201,11 @@ const Cart = () => {
                     </p>
                 </div>
 
-                <button onClick={placeOrder} className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium hover:bg-primary-dull transition">
-                    {paymentOption==="COD" ? "Place Order":"Proceed to Checkout"}
+                <button disabled={isPlacingOrder} onClick={placeOrder} className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium hover:bg-primary-dull transition disabled:cursor-not-allowed disabled:opacity-70">
+                    <span className='flex items-center justify-center gap-2'>
+                        {isPlacingOrder && <ButtonLoader />}
+                        {paymentOption==="COD" ? "Place Order":"Proceed to Checkout"}
+                    </span>
                 </button>
             </div>
         </div>

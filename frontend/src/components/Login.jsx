@@ -1,18 +1,21 @@
 import React, { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
+import ButtonLoader from './ButtonLoader';
 
 const Login = () => {
     const [state, setState] = React.useState("login");
     const [name, setName] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
 
     const {setShowUserLogin,setUser,axios,navigate}= useContext(AppContext);
 
     const submitHandler = async (e)=>{
         try {
             e.preventDefault();
+            setIsSubmitting(true);
             const {data}= await axios.post(`/api/user/${state}`,{name,email,password},{ withCredentials: true });
             if(data.success){
                 toast.success(data.message);
@@ -24,6 +27,8 @@ const Login = () => {
             }
             } catch (error) {
                 toast.error(error.message)
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -64,9 +69,12 @@ const Login = () => {
                             className="text-primary cursor-pointer">click here</span>
                     </p>
                 )}
-                <button className="bg-primary hover:bg-primary-dull transition-all text-white w-full py-2 
-                    rounded-md cursor-pointer">
-                    {state === "register" ? "Create Account" : "login"}
+                <button disabled={isSubmitting} className="bg-primary hover:bg-primary-dull transition-all text-white w-full py-2 
+                    rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-70">
+                    <span className='flex items-center justify-center gap-2'>
+                        {isSubmitting && <ButtonLoader />}
+                        {state === "register" ? "Create Account" : "login"}
+                    </span>
                 </button>
             </form>
         </div>

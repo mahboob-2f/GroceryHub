@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
+import ButtonLoader from '../ButtonLoader';
 
 const SellerLogin = () => {
     const { isSeller, setIsSeller, navigate,axios } = useContext(AppContext);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (isSeller) navigate('/seller');
@@ -15,6 +17,7 @@ const SellerLogin = () => {
     const submitHandler = async (e) => {
         try{
             e.preventDefault();
+            setIsSubmitting(true);
             const {data}= await axios.post('api/seller/login',{email,password},{ withCredentials: true });
             if(data.success){
                 setIsSeller(true);
@@ -25,6 +28,8 @@ const SellerLogin = () => {
 
         }catch(error){
             toast.error(error.message);
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -40,7 +45,12 @@ const SellerLogin = () => {
                     <p>Password</p>
                     <input  onChange={e => setPassword(e.target.value)} value={password} type="password"  placeholder='enter your password' className='border border-gray-200 rounded w-full p-2 mt-1 outline-primary' required/> 
                 </div>
-                <button className='w-full text-white py-2 rounded-md cursor-pointer bg-primary'>Login</button>
+                <button disabled={isSubmitting} className='w-full text-white py-2 rounded-md cursor-pointer bg-primary disabled:cursor-not-allowed disabled:opacity-70'>
+                    <span className='flex items-center justify-center gap-2'>
+                        {isSubmitting && <ButtonLoader />}
+                        Login
+                    </span>
+                </button>
             </div>
         </form>
     );

@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { dummyProducts } from "../assets/assets";
 import toast from 'react-hot-toast'
 import axios from 'axios';
 
@@ -24,6 +23,7 @@ export const AppContextProvider =({children}) =>{
     const [cartItems,setCartItems]= useState({})
     const [searchQuery,setSearchQuery]= useState({})
     const [totalProducts,setTotalProducts]= useState(0);
+    const [cartActionLoading,setCartActionLoading]= useState({});
 
     //  fetching is seller authenticated
     const fetchSeller = async()=>{
@@ -70,60 +70,98 @@ export const AppContextProvider =({children}) =>{
         fetchUser();
     },[])
 
-    // update cartitems 
-
     useEffect(()=>{
         let count = Object.values(cartItems).reduce((sum,count)=>sum+Number(count),0);
         setTotalProducts(count);
-        const updateCart= async()=>{
-            try {
-                const {data}= await axios.post('/api/cart/update',{cartItems},{ withCredentials: true });
-                if(!data.success){
-                    toast.error(data.message);
-                }else{
-                    // setTotalProducts(data.user.cartItems);
-                }
-            } catch (error) {
-                toast.error(error.message);
-                
-            }
-        }
-        
-        if(user) updateCart();
     },[cartItems]);
 
-    //  add products to cart
-    const addToCart = (itemId)=>{
-        let cartData = structuredClone(cartItems);
-
-        if(cartData[itemId]){
-            cartData[itemId] =Number(cartData[itemId])+ (1);
-        }else{
-            cartData[itemId] = (1);
+    const syncCartItems = async(nextCartItems, fallbackCartItems)=>{
+        if(!user){
+            return { success: true };
         }
-        setCartItems(cartData);
-        toast.success("Added to Cart");
-        // setTotalProducts(pre => Number(pre) +Number(1))
+
+        try {
+            const {data}= await axios.post('/api/cart/update',{cartItems:nextCartItems},{ withCredentials: true });
+            if(!data.success){
+                setCartItems(fallbackCartItems);
+                toast.error(data.message);
+            }
+            return data;
+        } catch (error) {
+            setCartItems(fallbackCartItems);
+            toast.error(error.message);
+            return { success: false };
+        }
+    }
+
+    const withCartItemLoader = async(itemId, action)=>{
+        setCartActionLoading((prev)=> ({...prev,[itemId]:true}));
+        try {
+            return await action();
+        } finally {
+            setCartActionLoading((prev)=>{
+                const updatedState = {...prev};
+                delete updatedState[itemId];
+                return updatedState;
+            });
+        }
+    }
+
+    //  add products to cart
+    const addToCart = async(itemId)=>{
+        return withCartItemLoader(itemId, async()=>{
+            let currentCart = structuredClone(cartItems);
+            let nextCart = structuredClone(currentCart);
+
+            if(nextCart[itemId]){
+                nextCart[itemId] =Number(nextCart[itemId])+ (1);
+            }else{
+                nextCart[itemId] = 1;
+            }
+
+            setCartItems(nextCart);
+            const response = await syncCartItems(nextCart, currentCart);
+            if(response?.success){
+                toast.success("Added to Cart");
+                return true;
+            }
+            return false;
+        });
     }
     //  updata cart quantity 
-    const updateCartItem =(itemId,quantity)=>{
-        let cartData = structuredClone(cartItems);
-        cartData[itemId] = quantity;
-        setCartItems(cartData);
-        toast.success("Cart updated");
+    const updateCartItem = async(itemId,quantity)=>{
+        return withCartItemLoader(itemId, async()=>{
+            let currentCart = structuredClone(cartItems);
+            let nextCart = structuredClone(currentCart);
+            nextCart[itemId] = Number(quantity);
+            setCartItems(nextCart);
+            const response = await syncCartItems(nextCart, currentCart);
+            if(response?.success){
+                toast.success("Cart updated");
+                return true;
+            }
+            return false;
+        });
     }
     // remove item from cart
-    const removeFromCart = (itemId)=>{
-        let cartData = structuredClone(cartItems);
-        if(cartData[itemId]){
-            cartData[itemId] =Number(cartData[itemId])-(1);
-            if(cartData[itemId]==0){
-                delete cartData[itemId];
+    const removeFromCart = async(itemId)=>{
+        return withCartItemLoader(itemId, async()=>{
+            let currentCart = structuredClone(cartItems);
+            let nextCart = structuredClone(currentCart);
+            if(nextCart[itemId]){
+                nextCart[itemId] =Number(nextCart[itemId])-(1);
+                if(nextCart[itemId]==0){
+                    delete nextCart[itemId];
+                }
             }
-        }
-        toast.success("Removed from cart");
-        setCartItems(cartData);
-        // setTotalProducts(pre => pre > 0 ? pre -1:0);
+            setCartItems(nextCart);
+            const response = await syncCartItems(nextCart, currentCart);
+            if(response?.success){
+                toast.success("Removed from cart");
+                return true;
+            }
+            return false;
+        });
     }
 
     //   get total cart amounts
@@ -158,6 +196,7 @@ export const AppContextProvider =({children}) =>{
         addToCart,
         updateCartItem,
         removeFromCart,
+        cartActionLoading,
         searchQuery,
         setSearchQuery,
         getCartAmount,

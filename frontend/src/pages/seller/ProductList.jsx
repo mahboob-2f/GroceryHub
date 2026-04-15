@@ -1,19 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
+import ButtonLoader from '../../components/ButtonLoader';
 
 const ProductList = () => {
     const { products, currency, axios, fetchProducts } = useContext(AppContext);
     const [loading, setLoading] = useState(false);
+    const [updatingId, setUpdatingId] = useState(null);
 
     const toggleStock = async (id, inStock) => {
-        setLoading(true);
+        setUpdatingId(id);
         try {
             const { data } = await axios.post('/api/product/stock', { id, inStock }, { withCredentials: true });
             if (data.success) {
                 await fetchProducts();
                 toast.success(data.message);
-                // setLoading(false);
             } else {
                 toast.error(data.message);
             }
@@ -21,7 +22,7 @@ const ProductList = () => {
             toast.error(error.message);
         }
         finally {
-            setLoading(false)
+            setUpdatingId(null)
         }
     }
     useEffect(() => {
@@ -98,10 +99,11 @@ const ProductList = () => {
                                                     <td className="px-4 py-3 max-sm:hidden">{currency}{product.offerPrice}</td>
                                                     <td className="px-4 py-3">
                                                         <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
-                                                            <input onChange={() => toggleStock(product._id, !product.inStock)} checked={product.inStock} type="checkbox" className="sr-only peer" />
+                                                            <input disabled={updatingId === product._id} onChange={() => toggleStock(product._id, !product.inStock)} checked={product.inStock} type="checkbox" className="sr-only peer" />
                                                             <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
                                                             <span className="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
                                                         </label>
+                                                        {updatingId === product._id && <ButtonLoader className='h-3.5 w-3.5 text-primary' />}
                                                     </td>
                                                 </tr>
                                             ))}

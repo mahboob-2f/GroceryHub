@@ -3,6 +3,7 @@ import { AppContext } from '../context/AppContext';
 import { Link, useParams } from 'react-router';
 import { assets } from '../assets/assets';
 import ProductCard from '../components/ProductCard';
+import ButtonLoader from '../components/ButtonLoader';
 
 const ProductDetails = () => {
 
@@ -10,6 +11,7 @@ const ProductDetails = () => {
     const { id } = useParams();
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [thumbnail, setThumbnail] = useState(null);
+    const [activeButton, setActiveButton] = useState(null);
 
     const selectedProduct = products.find((item) => item._id === id);
 
@@ -24,6 +26,21 @@ const ProductDetails = () => {
     useEffect(() => {
         setThumbnail(selectedProduct?.image[0] ? selectedProduct.image[0] : null);
     }, [selectedProduct])
+
+    const handleAddToCart = async () => {
+        setActiveButton('add');
+        await addToCart(selectedProduct._id);
+        setActiveButton(null);
+    };
+
+    const handleBuyNow = async () => {
+        setActiveButton('buy');
+        const isAdded = await addToCart(selectedProduct._id);
+        if (isAdded) {
+            navigate('/cart');
+        }
+        setActiveButton(null);
+    };
 
     return selectedProduct && (
         <div className="mt-12">
@@ -73,11 +90,17 @@ const ProductDetails = () => {
                     </ul>
 
                     <div className="flex items-center mt-10 gap-4 text-base">
-                        <button onClick={()=>addToCart(selectedProduct._id)} className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition" >
-                            Add to Cart
+                        <button disabled={activeButton !== null} onClick={handleAddToCart} className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition disabled:cursor-not-allowed disabled:opacity-70" >
+                            <span className='flex items-center justify-center gap-2'>
+                                {activeButton === 'add' && <ButtonLoader />}
+                                Add to Cart
+                            </span>
                         </button>
-                        <button onClick={()=> {addToCart(selectedProduct._id);navigate('/cart')}} className="w-full py-3.5 cursor-pointer font-medium bg-primary text-white hover:bg-primary-dull transition" >
-                            Buy now
+                        <button disabled={activeButton !== null} onClick={handleBuyNow} className="w-full py-3.5 cursor-pointer font-medium bg-primary text-white hover:bg-primary-dull transition disabled:cursor-not-allowed disabled:opacity-70" >
+                            <span className='flex items-center justify-center gap-2'>
+                                {activeButton === 'buy' && <ButtonLoader />}
+                                Buy now
+                            </span>
                         </button>
                     </div>
                 </div>

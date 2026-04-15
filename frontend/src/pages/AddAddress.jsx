@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { assets } from '../assets/assets';
 import { AppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
+import ButtonLoader from '../components/ButtonLoader';
 
 const InputField = ({ type, placeholder, name, handleChange, address }) => (
     <input
@@ -19,6 +20,7 @@ const InputField = ({ type, placeholder, name, handleChange, address }) => (
 const AddAddress = () => {
 
     const {axios,navigate,user}= useContext(AppContext);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [address, setAddress] = useState({
         firstName: '',
@@ -39,6 +41,7 @@ const AddAddress = () => {
     const submitHandler = async (e) => {
         try {
             e.preventDefault();
+            setIsSubmitting(true);
             const {data}= await axios.post('/api/address/add',{address},{ withCredentials: true });
             if(data.success){
                 toast.success(data.message);
@@ -48,7 +51,8 @@ const AddAddress = () => {
 
         } catch (error) {
                 toast.error(error.message);
-            
+        } finally {
+            setIsSubmitting(false);
         }
     }
     useEffect(()=>{
@@ -81,8 +85,11 @@ const AddAddress = () => {
                             <InputField handleChange={handleChange} address={address} name='country' type='text' placeholder='Enter Country'  />
                         </div>
                         <InputField handleChange={handleChange} address={address} name='phone' type='text' placeholder='Enter Phone ' />
-                        <button className='w-full mt-6 bg-primary text-white py-3 hover:bg-primary-dull transition cursor-pointer uppercase'>
-                            save Address
+                        <button disabled={isSubmitting} className='w-full mt-6 bg-primary text-white py-3 hover:bg-primary-dull transition cursor-pointer uppercase disabled:cursor-not-allowed disabled:opacity-70'>
+                            <span className='flex items-center justify-center gap-2'>
+                                {isSubmitting && <ButtonLoader />}
+                                save Address
+                            </span>
                         </button>
                     </form>
                 </div>

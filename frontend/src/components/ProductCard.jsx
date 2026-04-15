@@ -1,9 +1,12 @@
 import React, { useContext } from 'react';
 import { assets } from '../assets/assets';
 import { AppContext } from '../context/AppContext';
+import ButtonLoader from './ButtonLoader';
 
 const ProductCard = ({ product }) => {
-    const {currency,addToCart, removeFromCart,cartItems,navigate}= useContext(AppContext);    
+    const {currency,addToCart, removeFromCart,cartItems,navigate,cartActionLoading}= useContext(AppContext);
+
+    const isUpdating = Boolean(cartActionLoading[product._id]);
 
     return product && (
         <div onClick={()=>{navigate(`/products/${product.category.toLowerCase()}/${product._id}`);scrollTo(0,0);}}
@@ -28,19 +31,19 @@ const ProductCard = ({ product }) => {
                     </p>
                     <div className="text-primary " onClick={e => e.stopPropagation()}>
                         {!cartItems[product._id] ? (
-                            <button className="flex items-center justify-center cursor-pointer gap-1 bg-primary/10
-                                border border-primary-dull md:w-[80px] w-[64px] h-[34px] rounded text-primary font-medium"
+                            <button disabled={isUpdating} className="flex items-center justify-center cursor-pointer gap-1 bg-primary/10
+                                border border-primary-dull md:w-[80px] w-[64px] h-[34px] rounded text-primary font-medium disabled:cursor-not-allowed disabled:opacity-70"
                              onClick={() => addToCart(product._id)} >
-                                <img src={assets.cart_icon} alt="cart_icon" />
-                                Add
+                                {isUpdating ? <ButtonLoader /> : <img src={assets.cart_icon} alt="cart_icon" />}
+                                {isUpdating ? '...' : 'Add'}
                             </button>
                         ) : (
                             <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary/25 rounded select-none">
-                                <button onClick={() => removeFromCart(product._id)} className="cursor-pointer text-md px-2 h-full" >
+                                <button disabled={isUpdating} onClick={() => removeFromCart(product._id)} className="cursor-pointer text-md px-2 h-full disabled:cursor-not-allowed disabled:opacity-50" >
                                     -
                                 </button>
-                                <span className="w-5 text-center">{cartItems[product._id]}</span>
-                                <button onClick={() => addToCart(product._id)} className="cursor-pointer text-md px-2 h-full" >
+                                <span className="w-5 text-center">{isUpdating ? <ButtonLoader className='mx-auto h-3.5 w-3.5' /> : cartItems[product._id]}</span>
+                                <button disabled={isUpdating} onClick={() => addToCart(product._id)} className="cursor-pointer text-md px-2 h-full disabled:cursor-not-allowed disabled:opacity-50" >
                                     +
                                 </button>
                             </div>
